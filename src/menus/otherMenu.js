@@ -45,31 +45,14 @@ module.exports = (app, mainWindow, i18n) => {
           label: i18n.t('Paste'),
           role: 'paste'
         },
-        { 
-          label: i18n.t('Paste and Match Style'),
-          role: 'pasteAndMatchStyle' 
-        },
         {
           label: i18n.t('Delete'),
           role: 'delete'
         },
+        { type: 'separator' },
         {
           label: i18n.t('Select All'),
           role: 'selectAll'
-        },
-        { type: 'separator' },
-        {
-          label: i18n.t('Speech'),
-          submenu: [
-            {
-              label: i18n.t('Start Speaking'),
-              role: 'startspeaking' 
-            },
-            {
-              label: i18n.t('Stop Speaking'),
-              role: 'stopspeaking'
-            }
-          ]
         }
       ]
     },
@@ -122,8 +105,8 @@ module.exports = (app, mainWindow, i18n) => {
         },
         { type: 'separator' },
         { 
-          label: i18n.t('Window'),
-          role: 'window' 
+          label: i18n.t('Close'),
+          role: 'close' 
         }
       ]
     },
