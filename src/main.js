@@ -1,10 +1,19 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, Menu } = require('electron')
-const path = require('path')
+const { app, BrowserWindow, Menu } = require('electron');
 
-let mainWindow
-let mainMenu = Menu.buildFromTemplate(require('./mainMenu'))
+const path = require('path');
+const url = require('url');
 
+// const menuFactoryService = require('./services/menuFactory');
+const i18n = require('./config/i18next.config');
+
+const menuFactoryService = require('./services/menuFactory');
+
+let mainWindow;
+
+function isDev() {
+  return process.argv[2] == '--serve'
+}
 
 function createWindow () {
   // Create the browser window.
@@ -17,19 +26,38 @@ function createWindow () {
   })
 
   // and load the index.html of the app.
-  mainWindow.loadFile('index.html')
+  // if (isDev()) {
+  //   mainWindow.loadURL('http://localhost:4200')  
+  // } else {
+  //   mainWindow.loadURL(url.format({
+  //     pathname: path.join(__dirname, '../web/dist/index.html'),
+  //     protocol: 'file:',
+  //     slashes: true
+  //   }))
+  // }
+  mainWindow.loadFile('./src/index.html');
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools()
 
-  Menu.setApplicationMenu(mainMenu)
+  mainWindow.on('closed', function() {
+    mainWindow = null;
+  });
+
+  i18n.on('loaded', () => {
+    i18n.changeLanguage();
+    i18n.off('loaded');
+  });
+
+  i18n.on('languageChanged', (lang) => {
+    menuFactoryService.buildMenu(app, mainWindow, i18n);
+  });
 }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.whenReady().then(function() {
-  console.log(app.getLocale())
+app.whenReady().then(() => {
   createWindow()
 })
 
